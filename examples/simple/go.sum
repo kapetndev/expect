@@ -1,0 +1,5 @@
+github.com/crumbandbase/expect v0.0.0-20210303235251-2e65b5b99104 h1:3P2d1pSpdy0kWV5p5U3ujpSsAKNRwwvAIgCW6T6vmcA=
+github.com/crumbandbase/expect v0.0.0-20210303235251-2e65b5b99104/go.mod h1:joWrJ/5ULpBosZiUbzMoi6jdXWFNnF6RLcHS0zJ3z5g=
+github.com/google/go-cmp v0.5.4 h1:L8R9j+yAqZuZjsqh/z+F1NCffTKKLShY6zXTItVIZ8M=
+github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
