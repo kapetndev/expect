@@ -1,4 +1,4 @@
-# expect
+# expect ![test](https://github.com/crumbandbase/expect/workflows/test/badge.svg?event=push)
 
 A (very) simple expectation, and `diff`, package for use in test suites.
 
