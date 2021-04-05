@@ -46,14 +46,14 @@ func TestGreeting(t *testing.T) {
 		expected := "Hello, Picard"
 		got := greeting("Picard")
 
-		expect.Equal(t, got, expected)
+		expect.Equal(t, got, expected, "greetings were not equal")
 	})
 
 	t.Run("fails when the greeting are not equal", func(t *testing.T) {
 		expected := "Bonjour, Picard"
 		got := greeting("Picard")
 
-		expect.Equal(t, got, expected)
+		expect.Equal(t, got, expected, "greetings were not equal")
 	})
 }
 ```
@@ -64,10 +64,12 @@ differences. This is handled by the brilliant
 that will be printed for this test suite is:
 
 ```bash
-    string(
-  -       "Hello, Picard",
-  +       "Bonjour, Picard",
-    )
+expect.go:15: greetings were not equal
+expect.go:16:
+      string(
+    -       "Hello, Picard",
+    +       "Bonjour, Picard",
+      )
 ```
 
 ## License

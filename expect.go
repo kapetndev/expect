@@ -1,7 +1,6 @@
 package expect
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -11,18 +10,18 @@ import (
 // Equal asserts that two values are identical. If the values are not identical
 // then their differences are printed and the current test is marked to have
 // failed.
-func Equal(t *testing.T, got, expected interface{}, opts ...cmp.Option) {
+func Equal(t *testing.T, got, expected interface{}, msg string, opts ...cmp.Option) {
 	if diff := cmp.Diff(got, expected, opts...); diff != "" {
-		fmt.Println(diff)
-		t.Fail()
+		t.Error(msg)
+		t.Logf("\n%s", diff)
 	}
 }
 
 // NotEqual asserts that two values are not identical. It the values are
 // identical then the test is marked to have failed.
-func NotEqual(t *testing.T, got, expected interface{}, opts ...cmp.Option) {
+func NotEqual(t *testing.T, got, expected interface{}, msg string, opts ...cmp.Option) {
 	if diff := cmp.Diff(got, expected, opts...); diff == "" {
-		t.Error("values are equal")
+		t.Error(msg)
 	}
 }
 
@@ -35,17 +34,17 @@ type Decoder interface {
 // StreamEqual does a deep comparison of a data stream against an expected
 // value. This function uses reflection to determine the type of the expected
 // value in order to know how to properly decode the stream.
-func StreamEqual(t *testing.T, d Decoder, expected interface{}, opts ...cmp.Option) {
+func StreamEqual(t *testing.T, d Decoder, expected interface{}, msg string, opts ...cmp.Option) {
 	got := decodeStream(t, d, expected)
-	Equal(t, got, expected, opts...)
+	Equal(t, got, expected, msg, opts...)
 }
 
 // StreamNotEqual does a deep comparison of a data stream against an expected
 // value. This function uses reflection to determine the type of the expected
 // value in order to know how to properly decode the stream.
-func StreamNotEqual(t *testing.T, d Decoder, expected interface{}, opts ...cmp.Option) {
+func StreamNotEqual(t *testing.T, d Decoder, expected interface{}, msg string, opts ...cmp.Option) {
 	got := decodeStream(t, d, expected)
-	NotEqual(t, got, expected, opts...)
+	NotEqual(t, got, expected, msg, opts...)
 }
 
 func decodeStream(t *testing.T, d Decoder, expected interface{}) interface{} {

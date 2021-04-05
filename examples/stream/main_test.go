@@ -17,9 +17,11 @@ func TestGreeting(t *testing.T) {
 		// Call the handler.
 		handler(w, r)
 
-		expect.StreamEqual(t, json.NewDecoder(w.Body), &greeting{
+		expected := &greeting{
 			Greeting: "Hello, Picard",
-		})
+		}
+
+		expect.StreamEqual(t, json.NewDecoder(w.Body), expected, "greetings were not equal")
 	})
 
 	t.Run("fails when the greeting are not equal", func(t *testing.T) {
@@ -29,8 +31,10 @@ func TestGreeting(t *testing.T) {
 		// Call the handler.
 		handler(w, r)
 
-		expect.StreamEqual(t, json.NewDecoder(w.Body), &greeting{
+		expected := &greeting{
 			Greeting: "Bonjour, Picard",
-		})
+		}
+
+		expect.StreamEqual(t, json.NewDecoder(w.Body), expected, "greetings were not equal")
 	})
 }

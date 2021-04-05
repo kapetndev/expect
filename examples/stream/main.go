@@ -13,6 +13,10 @@ func main() {
 	}
 }
 
+type greeting struct {
+	Greeting string `json:"greeting"`
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	e := json.NewEncoder(w)
 
@@ -23,8 +27,4 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err := e.Encode(res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-type greeting struct {
-	Greeting string `json:"greeting"`
 }
