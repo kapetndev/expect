@@ -2,6 +2,7 @@ package expect_test
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http/httptest"
 	"os"
 	"testing"
@@ -23,6 +24,12 @@ var (
 
 type starship struct {
 	Name string `json:"name"`
+}
+
+type errorDecoder struct{}
+
+func (d *errorDecoder) Decode(interface{}) error {
+	return errors.New("bad thing happened")
 }
 
 type expectFunc func(*testing.T, interface{}, interface{}, string, ...cmp.Option)
@@ -98,6 +105,25 @@ func TestStreamEqual(t *testing.T) {
 		decoder := newStreamDecoder(t, enterprise)
 		testStreamFunc(t, expect.StreamEqual, decoder, &voyager, "values were equal", wantError)
 	})
+
+	t.Run("fails when the expected response is nil", func(t *testing.T) {
+		shouldPanic(t, func() {
+			decoder := newStreamDecoder(t, enterprise)
+			testStreamFunc(t, expect.StreamEqual, decoder, nil, "values were not equal", wantError)
+		})
+	})
+
+	t.Run("fails when the decoder is nil", func(t *testing.T) {
+		shouldPanic(t, func() {
+			testStreamFunc(t, expect.StreamEqual, nil, &enterprise, "values were not equal", wantError)
+		})
+	})
+
+	t.Run("fails when the decoder cannot decode the stream", func(t *testing.T) {
+		shouldPanic(t, func() {
+			testStreamFunc(t, expect.StreamEqual, &errorDecoder{}, &enterprise, "values were not equal", wantError)
+		})
+	})
 }
 
 func TestStreamNotEqual(t *testing.T) {
@@ -110,6 +136,25 @@ func TestStreamNotEqual(t *testing.T) {
 		decoder := newStreamDecoder(t, enterprise)
 		testStreamFunc(t, expect.StreamNotEqual, decoder, &enterprise, "values were not equal", wantError)
 	})
+
+	t.Run("fails when the expected response is nil", func(t *testing.T) {
+		shouldPanic(t, func() {
+			decoder := newStreamDecoder(t, enterprise)
+			testStreamFunc(t, expect.StreamNotEqual, decoder, nil, "values were not equal", wantError)
+		})
+	})
+
+	t.Run("fails when the decoder is nil", func(t *testing.T) {
+		shouldPanic(t, func() {
+			testStreamFunc(t, expect.StreamNotEqual, nil, &enterprise, "values were not equal", wantError)
+		})
+	})
+
+	t.Run("fails when the decoder cannot decode the stream", func(t *testing.T) {
+		shouldPanic(t, func() {
+			testStreamFunc(t, expect.StreamNotEqual, &errorDecoder{}, &enterprise, "values were not equal", wantError)
+		})
+	})
 }
 
 func captureOutput(fn func()) {
@@ -119,4 +164,14 @@ func captureOutput(fn func()) {
 	fn()
 	w.Close()
 	os.Stdout = old
+}
+
+func shouldPanic(t *testing.T, fn func()) {
+	ch := make(chan bool)
+	go func() {
+		defer func() { recover(); ch <- true }()
+		fn()
+		t.Error("did not panic")
+	}()
+	<-ch
 }

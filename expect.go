@@ -49,11 +49,12 @@ func StreamNotEqual(t *testing.T, d Decoder, expected interface{}, msg string, o
 
 func decodeStream(t *testing.T, d Decoder, expected interface{}) interface{} {
 	dpv := reflect.ValueOf(expected)
-	if dpv.Kind() != reflect.Ptr {
-		t.Fatal("expected not a pointer")
+	if dpv.Kind() != reflect.Ptr || dpv.IsNil() {
+		t.Fatal("expected must be a non-nil pointer")
 	}
-	if dpv.IsNil() {
-		t.Fatal("expected pointer is nil")
+
+	if d == nil {
+		t.Fatal("decoder must be a non-nil type")
 	}
 
 	// Use the type of the expected value to create a new zero value of the same
